@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hayato Topup - Free Fire Diamonds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts: Inter for modern, clean look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e53935;
+      --primary-light: #ff7875;
+      --primary-dark: #b71c1c;
+      --border: #ececec;
+      --text: #222;
+      --gray: #888;
+      --blue: #00b0f0;
+      --success: #00c853;
+      --card-radius: 17px;
+      --shadow: 0 2px 16px #0001;
+      --menu-width: 260px;
+      --z-menu: 1001;
+      --z-overlay: 1000;
+      --whatsapp: #25d366;
+      --whatsapp-glow: 0 0 18px #25d366cc, 0 0 8px #25d36688;
+    }
+    html, body {
+      background: #f7fafd;
+      color: var(--text);
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 18px 8px 10px;
+      background: #fff;
+      border-bottom: 1.7px solid var(--border);
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 101;
+      box-shadow: 0 5px 18px #0001;
+    }
+    .logo {
+      height: 38px;
+      margin-right: 15px;
+    }
+    .header-title {
+      font-weight: 700;
+      font-size: 1.30em;
+      letter-spacing: 0.2px;
+      color: var(--primary-dark);
+      margin-bottom: 2px;
+    }
+    .header-sub {
+      font-size: 1.06em;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .avatar {
+      margin-left: 15px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #f2f2f2;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* SIDEBAR MENU (RIGHT) */
+    .menu-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 38px;
+      height: 38px;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      margin-left: auto;
+      z-index: var(--z-menu);
+      background: none;
+      border: none;
+      outline: none;
+    }
+    .menu-bar {
+      width: 26px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: 0.3s;
+      box-shadow: 0 1px 8px #ff003355;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0; 
+      right: 0;
+      height: 100vh;
+      width: var(--menu-width);
+      background: #fff;
+      box-shadow: -2px 0 22px #0002;
+      border-left: 1px solid var(--border);
+      z-index: var(--z-menu);
+      padding-top: 0;
+      transition: transform 0.28s cubic-bezier(.77,0,.18,1);
+      transform: translateX(100%);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar .menu-list {
+      margin: 0; padding: 0;
+      list-style: none;
+      margin-top: 80px;
+    }
+    .sidebar .menu-list li {
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar .menu-btn-item {
+      width: 100%;
+      padding: 15px 30px;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 1.09em;
+      color: var(--text);
+      font-family: inherit;
+      transition: background 0.13s, color 0.13s;
+      font-weight: 500;
+      cursor: pointer;
+      border-right: 4px solid transparent;
+    }
+    .sidebar .menu-btn-item.active,
+    .sidebar .menu-btn-item:hover {
+      background: #f3f3f8;
+      color: var(--primary);
+      border-right: 4px solid var(--primary);
+    }
+    .sidebar .sidebar-logo {
+      display: flex;
+      align-items: center;
+      padding: 25px 22px 6px 25px;
+    }
+    .sidebar .sidebar-logo img {
+      height: 32px; margin-right: 10px;
+    }
+    .sidebar .sidebar-logo span {
+      font-size: 1.12em; font-weight: bold; color: var(--primary);
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #0005;
+      z-index: var(--z-overlay);
+      display: none;
+    }
+    .overlay.show { display: block; animation: fadeIn 0.17s;}
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* MAIN SECTIONS */
+    main {
+      max-width: 670px;
+      margin: 0 auto;
+      padding: 24px 12px 36px 12px;
+      min-height: 70vh;
+    }
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.37s; }
+
+    /* DIAMOND GRID */
+    .diamond-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+      margin: 20px 0 34px 0;
+    }
+    @media (max-width: 700px) {
+      .diamond-grid { grid-template-columns: repeat(2,1fr);}
+      .sidebar { width: 82vw; min-width: 180px;}
+    }
+    .diamond-card {
+      background: #fff;
+      border: 1.7px solid var(--border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 6px 16px 6px;
+      transition: box-shadow 0.19s, border 0.19s;
+      position: relative;
+    }
+    .diamond-card .diamond-icon {
+      width: 34px; height: 34px;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .diamond-card .diamond-amount {
+      font-size: 1.19em;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .diamond-card .diamond-price {
+      font-size: 1.04em;
+      color: var(--text);
+      margin-bottom: 11px;
+      font-weight: 600;
+    }
+    .diamond-card .apply-btn {
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 12px #00c85355;
+      transition: background 0.18s, box-shadow 0.18s;
+    }
+    .diamond-card .apply-btn:hover { background: #009c43;}
+
+    /* Special Deals */
+    .special-title {
+      font-size: 1.15em;
+      color: var(--text);
+      font-weight: 700;
+      margin: 1.2em 0 0.2em 0;
+      display: flex; align-items: center;
+    }
+    .special-title::after {
+      content: "";
+      flex: 1;
+      height: 1.5px;
+      background: var(--border);
+      margin-left: 10px;
+      border-radius: 1px;
+    }
+    .special-deals-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+      margin: 17px 0 0 0;
+    }
+    .special-deal-card {
+      background: #fff;
+      border: 1.2px solid var(--border);
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+      padding: 8px 7px 8px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .special-deal-card img {
+      width: 100%;
+      max-width: 140px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      background: #f9f9f9;
+    }
+    .special-deal-card .deal-name {
+      font-size: 1.01em;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 2px;
+      text-align: center;
+    }
+    .special-deal-card .deal-price {
+      font-size: 1.01em;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 3px;
+      text-align: center;
+    }
+
+    /* Orders Table */
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+      font-size: 0.99em;
+    }
+    .orders-table th, .orders-table td {
+      padding: 8px 5px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .orders-table th { color: var(--primary); background: #fafbfd;}
+    .order-status.pending { color: #fff; background: var(--primary); border-radius: 8px; padding: 3px 10px;}
+    .order-status.progress { color: #fff; background: #ffb300; border-radius: 8px; padding: 3px 10px;}
+    .order-status.completed { color: #fff; background: var(--success); border-radius: 8px; padding: 3px 10px;}
+
+    /* Terms and Contact */
+    .terms-list {
+      margin: 1em 0 0 1em;
+      color: #333;
+      font-size: 1.07em;
+      line-height: 1.73;
+    }
+    .contact-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 1.12em;
+      font-weight: 600;
+      margin: 30px 0 0 0;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 7px;
+      box-shadow: 0 0 14px #e5393555;
+      transition: background 0.19s;
+      text-decoration: none;
+    }
+    .contact-btn:hover { background: var(--primary-light);}
+    .wa-logo {
+      height: 22px; width: 22px; vertical-align: middle;
+    }
+
+    /* Payment */
+    .payment-panel {
+      background: #f4f7fa;
+      border-radius: 11px;
+      padding: 26px 19px;
+      margin: 2em auto 0 auto;
+      max-width: 380px;
+      box-shadow: 0 0 18px #00d02d18;
+      text-align: left;
+      border: 1.3px solid var(--border);
+    }
+    .payment-panel img {
+      width: 90px;
+      margin-bottom: 8px;
+      background: #fff;
+      border-radius: 7px;
+      padding: 2px 8px;
+      box-shadow: 0 0 8px #00d02d22;
+      display: block;
+    }
+    .payment-panel .payment-details {
+      font-size: 1.1em;
+      color: #1a1a1a;
+      letter-spacing: 0.3px;
+      line-height: 1.6;
+      font-family: inherit;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+    .payment-panel .contact-btn { margin-top: 14px;}
+
+    /* Popup */
+    .popup-bg {
+      position: fixed; top:0; left:0; width:100vw; height:100vh; z-index:2000;
+      background:#0008; display:none; align-items:center; justify-content:center;
+      animation: fadeIn 0.18s;
+    }
+    .popup-bg.show { display:flex; }
+    .popup {
+      background:#fff;
+      border-radius: 16px;
+      padding: 28px 20px 22px 20px;
+      box-shadow: 0 6px 48px #0002;
+      max-width: 90vw;
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 0.28s;
+      position: relative;
+    }
+    .popup h3 {
+      color: var(--primary);
+      margin-top: 0; margin-bottom: 8px;
+      font-size: 1.22em;
+    }
+    .popup label {
+      display: block;
+      margin: 12px 0 7px 0;
+      color: #222;
+      font-weight: 600;
+      text-align: left;
+      font-size: 1em;
+    }
+    .popup input {
+      width: 100%;
+      padding: 8px 7px;
+      border-radius: 7px;
+      border: 1.1px solid var(--border);
+      font-size: 1.06em;
+      margin-bottom: 13px;
+      background: #f8f8fc;
+      outline: none;
+    }
+    .popup .popup-actions {
+      margin-top: 12px;
+      display: flex; gap: 12px; justify-content: center;
+    }
+    .popup .popup-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 1em;
+      padding: 7px 20px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #e5393539;
+      transition: background 0.14s;
+    }
+    .popup .popup-btn.cancel { background: #eee; color: #333; box-shadow: none; }
+    .popup .popup-btn:active { transform: scale(0.97);}
+    .popup .popup-close {
+      position: absolute; right: 16px; top: 10px; font-size: 1.5em; color: #bbb;
+      background: none; border: none; cursor: pointer;
+    }
+    .popup .popup-close:hover { color: var(--primary);}
+    .popup .popup-success {
+      color: var(--success);
+      font-weight: bold;
+      margin: 15px 0 0 0;
+    }
+
+    /* Floating WhatsApp Button */
+    .whatsapp-float {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 2020;
+      background: var(--whatsapp);
+      border-radius: 50%;
+      width: 58px; height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--whatsapp-glow);
+      animation: wa-pulse 1.3s infinite alternate;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: box-shadow 0.17s, background 0.13s;
+    }
+    .whatsapp-float img {
+      width: 33px; height: 33px;
+      display: block;
+      filter: drop-shadow(0 0 6px #fff5);
+    }
+    @keyframes wa-pulse {
+      0% { box-shadow: 0 0 20px #25d366cc, 0 0 10px #25d36699;}
+      100% { box-shadow: 0 0 40px #25d366cc, 0 0 20px #25d36655;}
+    }
+    .whatsapp-float:hover {
+      background: #1ebd5a;
+      box-shadow: 0 0 50px #25d366cc, 0 0 25px #25d36688;
+      animation: none;
+    }
+
+    @media(max-width: 500px){
+      .header-title { font-size: 1.08em;}
+      .diamond-grid { gap: 12px;}
+      .special-title { font-size: 1em;}
+      .sidebar { width: 88vw;}
+      .whatsapp-float { width: 48px; height: 48px; right: 10px; bottom: 12px;}
+      .whatsapp-float img { width: 26px; height: 26px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://i.postimg.cc/k44g3vR5/garena-logo-png-seeklogo-622569.png" class="logo" alt="Garena Logo">
+    <div>
+      <div class="header-title">Official Top Up Center</div>
+      <div class="header-sub">Hayato Topup</div>
+    </div>
+    <div class="avatar">
+      <svg width="22" height="22" fill="#bbb"><circle cx="11" cy="8" r="5"/><ellipse cx="11" cy="18" rx="7" ry="3"/></svg>
+    </div>
+    <button class="menu-btn" id="menu-btn" aria-label="Open Menu">
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+    </button>
+  </header>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://i.postimg.cc/k44g3vR5/garena-logo-png-seeklogo-622569.png">
+      <span>Hayato Topup</span>
+    </div>
+    <ul class="menu-list">
+      <li><button class="menu-btn-item active" data-section="purchase">Purchase</button></li>
+      <li><button class="menu-btn-item" data-section="orders">Your Orders</button></li>
+      <li><button class="menu-btn-item" data-section="payment">Payment</button></li>
+      <li><button class="menu-btn-item" data-section="terms">Terms &amp; Condition</button></li>
+      <li><button class="menu-btn-item" data-section="contact">Contact</button></li>
+    </ul>
+  </nav>
+  <div class="overlay" id="overlay"></div>
+
+  <main>
+    <!-- PURCHASE SECTION -->
+    <section class="section active" id="section-purchase">
+      <div style="display:flex;gap:14px;margin-bottom:18px;">
+        <button class="popup-btn" style="border:2px solid var(--primary);background:#fff;color:var(--primary);font-weight:700;">Purchase</button>
+        <button class="popup-btn" style="border:2px solid #ccc;background:#fff;color:#888;cursor:not-allowed;">Redeem</button>
+      </div>
+      <div class="diamond-grid" id="diamond-grid"></div>
+      <div class="special-title">Special Deals</div>
+      <div class="special-deals-grid" id="special-deals-grid"></div>
+    </section>
+    <!-- ORDERS SECTION -->
+    <section class="section" id="section-orders">
+      <h2>Your Orders</h2>
+      <div id="orders-content"></div>
+    </section>
+    <!-- PAYMENT SECTION -->
+    <section class="section" id="section-payment">
+      <h2>Payment - Easypaisa</h2>
+      <div class="payment-panel">
+        <img src="https://i.postimg.cc/1zYfzdQF/easypaisa-logo-png-seeklogo-512220.png" alt="Easypaisa Logo">
+        <div class="payment-details">
+          <b>Account Number:</b> 03202678978 <br>
+          <b>Name:</b> Muhammad Maz <br>
+          <b>Payment Method:</b> Easypaisa
+        </div>
+        <a href="https://wa.me/989179371697" target="_blank" class="contact-btn">
+          <img src="https://i.postimg.cc/DyqJc5rV/whatsapp-business-logo-png-seeklogo-393966.png" class="wa-logo" alt="WhatsApp">
+          Confirm Payment
+        </a>
+      </div>
+    </section>
+    <!-- TERMS SECTION -->
+    <section class="section" id="section-terms">
+      <h2>Terms &amp; Conditions</h2>
+      <ul class="terms-list" id="terms-list"></ul>
+      <a href="https://wa.me/989179371697" target="_blank" class="contact-btn">
+        <img src="https://i.postimg.cc/DyqJc5rV/whatsapp-business-logo-png-seeklogo-393966.png" class="wa-logo">
+        WhatsApp Support
+      </a>
+    </section>
+    <!-- CONTACT SECTION -->
+    <section class="section" id="section-contact">
+      <h2>Contact Us</h2>
+      <p>For any issues, queries, or urgent support, contact us directly on WhatsApp:</p>
+      <a href="https://wa.me/989179371697" target="_blank" class="contact-btn">
+        <img src="https://i.postimg.cc/DyqJc5rV/whatsapp-business-logo-png-seeklogo-393966.png" class="wa-logo">
+        Chat on WhatsApp
+      </a>
+      <p style="margin-top: 1.6em; font-size: 1.02em;">We aim to respond quickly to all messages.</p>
+    </section>
+  </main>
+
+  <!-- POPUP -->
+  <div class="popup-bg" id="popup-bg">
+    <div class="popup" id="popup">
+      <button class="popup-close" id="popup-close">&times;</button>
+      <h3 id="popup-title">Order Diamonds</h3>
+      <form id="popup-form">
+        <label for="popup-uid">Enter your Free Fire UID</label>
+        <input type="text" id="popup-uid" maxlength="18" required placeholder="e.g. 123456789">
+        <label for="popup-method">Payment Method</label>
+        <input type="text" id="popup-method" disabled value="Easypaisa (03202678978)">
+        <div class="popup-actions">
+          <button type="submit" class="popup-btn">Place Order</button>
+          <button type="button" class="popup-btn cancel" id="popup-cancel">Cancel</button>
+        </div>
+        <div class="popup-success" id="popup-success" style="display:none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <a href="https://wa.me/989179371697" target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <img src="https://i.postimg.cc/DyqJc5rV/whatsapp-business-logo-png-seeklogo-393966.png" alt="WhatsApp">
+  </a>
+
+  <script>
+    // --- Theme Data ---
+    // PRICES as per your request
+    const DIAMONDS = [
+      { id: 1, amount: 13,   price: 20  },
+      { id: 2, amount: 35,   price: 50  },
+      { id: 3, amount: 70,   price: 110 },
+      { id: 4, amount: 140,  price: 200 },
+      { id: 5, amount: 355,  price: 499 },
+      { id: 6, amount: 713,  price: 1000 },
+      { id: 7, amount: 1426, price: 2000 },
+      { id: 8, amount: 3565, price: 5000 },
+      { id: 9, amount: 7150, price: 10000 }, // fixed to 7150
+    ];
+    // Special deals (with prices & your images)
+    const SPECIAL_DEALS = [
+      { name: 'Weekly Membership', img: 'https://i.postimg.cc/y6j2SCG2/oss-a4dc82551f55d986ea4bab3e8521c172.webp', price: 340 },
+      { name: 'Monthly Membership', img: 'https://i.postimg.cc/VknRnj65/oss-3c8ac1d57fcaeb222b2fe02d9f8cc5d8.webp', price: 1400 },
+      { name: 'Evo Access 3D', img: 'https://i.postimg.cc/vBcX1C6w/Picsart-25-08-14-23-00-53-665.png', price: 200 },
+      { name: 'Evo Access 7D', img: 'https://i.postimg.cc/vBcX1C6w/Picsart-25-08-14-23-00-53-665.png', price: 300 },
+      { name: 'Evo Access 30D', img: 'https://i.postimg.cc/vBcX1C6w/Picsart-25-08-14-23-00-53-665.png', price: 910 },
+      { name: 'Weekly Membership Lite', img: 'https://i.postimg.cc/QxxCpsd7/oss-8e0a3889202696924897196c286b3da8-png-thumb.jpg', price: 200 },
+    ];
+
+    // --- Sidebar Menu ---
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    menuBtn.onclick = () => { sidebar.classList.add('open'); overlay.classList.add('show'); }
+    overlay.onclick = closeSidebar;
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+    document.querySelectorAll('.menu-btn-item').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.menu-btn-item').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        showSection(btn.dataset.section);
+        closeSidebar();
+      }
+    });
+
+    // --- Sections ---
+    const sectionIds = ['purchase','orders','payment','terms','contact'];
+    function showSection(id) {
+      sectionIds.forEach(sec=>{
+        document.getElementById('section-'+sec).classList.toggle('active', sec===id);
+      });
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    // --- Diamon
